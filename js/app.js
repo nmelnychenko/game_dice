@@ -12,6 +12,7 @@ const RESET_VALUE = 2;
 let scores = [0, 0];
 let activePlayer = 0;
 let current = 0;
+let winScore = 100;
 const diceElements = Array.from(document.querySelectorAll('.dice'));
 
 const initGame = () => {
@@ -38,6 +39,11 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
   if (!values.includes(RESET_VALUE) && values[0] !== values[1]) {
     current += values[0] + values[1];
     document.getElementById('current-'+activePlayer).textContent = current;
+
+    if (scores[activePlayer] + current >= winScore) {
+      alert(`Player ${activePlayer} won!!!`);	
+    }
+
   } else {
     changePlayer();
   }
@@ -51,6 +57,20 @@ const changePlayer = () => {
   diceElements.forEach(item => item.style.display = 'none');
   document.querySelector(`.player-${activePlayer}-panel`).classList.toggle('active');
 }
+
+const updateWinScore = () => {
+  const value = document.querySelector("[name='final-score-value']").value;
+  if (value) {
+    winScore = value;
+  } else {
+    alert("Вы не ввели значение в поле ввода");
+  }
+}
+
+document.querySelector('.form__button').addEventListener('click', function(e) {
+  e.preventDefault();
+  updateWinScore();
+})
 
 document.querySelector('.btn-hold').addEventListener('click', function() {
   scores[activePlayer] += current;
