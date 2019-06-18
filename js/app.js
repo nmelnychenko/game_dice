@@ -9,18 +9,46 @@ GAME RULES:
 
 const RESET_VALUE = 2;
 
-let scores = [0, 0];
 let activePlayer = 0;
-let current = 0;
 let winScore = 100;
 const diceElements = Array.from(document.querySelectorAll('.dice'));
 
+const gamer = {
+  getScore: function() {
+    return this.score
+  },
+  setScore: function() {
+    this.score += this.current;
+  },
+  resetScore: function() {
+    this.current = 0;
+  }
+}
+
+const player1 = Object.create(gamer);
+const player2 = Object.create(gamer);
+const playerN = Object.create(gamer);
+const players = [player1, player2];
+const currentPlayer = players[activePlayer];
+
 const initGame = () => {
+  player1.name = prompt('Введите имя первого игрока', 'Player 1');
+  player1.resetScore();
+  player1.score = 0;
+  player2.name = prompt('Введите имя второго игрока', 'Player 2');
+  player2.resetScore();
+  player2.score = 0;
   document.querySelector('#current-0').textContent = 0;
   document.querySelector('#current-1').textContent = 0;
   document.querySelector('#score-0').textContent = 0;
   document.querySelector('#score-1').textContent = 0;
   diceElements.forEach(item => item.style.display = 'none');
+
+  players.forEach((item, index) => {
+    if (item.name === null) {
+      item.name = `Player ${index + 1}`;
+    }
+  })
 }
 
 initGame();
@@ -37,11 +65,11 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
   })
 
   if (!values.includes(RESET_VALUE) && values[0] !== values[1]) {
-    current += values[0] + values[1];
-    document.getElementById('current-'+activePlayer).textContent = current;
+    currentPlayer.current += values[0] + values[1];
+    document.getElementById('current-'+activePlayer).textContent = currentPlayer.current;
 
-    if (scores[activePlayer] + current >= winScore) {
-      alert(`Player ${activePlayer} won!!!`);	
+    if (currentPlayer.getScore() + currentPlayer.current >= winScore) {
+      alert(`${currentPlayer.name} won!!!`);	
     }
 
   } else {
@@ -50,7 +78,7 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
 });
 
 const changePlayer = () => {
-  current = 0;
+  currentPlayer.resetScore();
   document.getElementById('current-'+activePlayer).textContent = 0;
   document.querySelector(`.player-${activePlayer}-panel`).classList.toggle('active');
   activePlayer = +!activePlayer;
@@ -73,8 +101,8 @@ document.querySelector('.form__button').addEventListener('click', function(e) {
 })
 
 document.querySelector('.btn-hold').addEventListener('click', function() {
-  scores[activePlayer] += current;
-  document.querySelector(`#score-${activePlayer}`).textContent = scores[activePlayer];
+  currentPlayer.setScore();
+  document.querySelector(`#score-${activePlayer}`).textContent = currentPlayer.getScore();
   changePlayer();
 });
 
