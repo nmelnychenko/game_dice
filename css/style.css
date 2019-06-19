@@ -99,7 +99,7 @@ body {
     font-size: 30px;
 }
 
-button:not(.form__button) {
+button:not(.form__button):not(.btn-show) {
     position: absolute;
     width: 200px;
     left: 50%;
@@ -172,4 +172,13 @@ i {
     padding: 10px 20px;
     font-weight: 600;
     cursor: pointer;
+}
+
+.btn-show {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    left: auto;
+    font-weight: 600;
+    padding: 10px 20px;
 }
