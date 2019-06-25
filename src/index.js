@@ -1,3 +1,5 @@
+import gamer from './constructor';
+import { hasWinner, getWinner, updateWinScore, showWinners } from './helpers';
 /*
 GAME RULES:
 - The game has 2 players, playing in rounds
@@ -15,21 +17,6 @@ let winScore = 100;
 let winners = storageValue !== null ? JSON.parse(storageValue) : [];
 const diceElements = Array.from(document.querySelectorAll('.dice'));
 
-
-const gamer = {
-  getScore: function() {
-    return this.score
-  },
-  setScore: function(score) {
-    this.score = score;
-  },
-  resetScore: function() {
-    this.current = 0;
-  }
-}
-
-const hasWinner = (arr, name) => arr.some(item => item.name === name);
-const getWinner = (arr, name) => arr.find(item => item.name === name);
 const createPlayer = (name) => {
   if (hasWinner(winners, name)) {
     const player = getWinner(winners, name);
@@ -113,31 +100,9 @@ const changePlayer = () => {
   document.querySelector(`.player-${activePlayer}-panel`).classList.toggle('active');
 }
 
-const updateWinScore = () => {
-  const value = document.querySelector("[name='final-score-value']").value;
-  if (value) {
-    winScore = value;
-  } else {
-    alert("Вы не ввели значение в поле ввода");
-  }
-}
-
-const showWinners = () => {
-  if (winners.length) {
-    const result = winners
-      .sort((a, b) => (b.winRate - a.winRate))
-      .reduce((acc, item) => {
-        return acc + `${item.name}: ${item.winRate} wins\n`
-      }, '');
-    alert(result);
-  } else {
-    alert('Еще никто не выигрывал!');
-  }
-}
-
 document.querySelector('.form__button').addEventListener('click', function(e) {
   e.preventDefault();
-  updateWinScore();
+  winScore = updateWinScore(winScore);
 })
 
 document.querySelector('.btn-hold').addEventListener('click', function() {
@@ -153,4 +118,6 @@ document.querySelector('.btn-new').addEventListener('click', function() {
   initGame();
 });
 
-document.querySelector('.btn-show').addEventListener('click', showWinners);
+document.querySelector('.btn-show').addEventListener('click', function() {
+  showWinners(winners);
+});
